@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScenerioClass", "ScenerioCl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAdapterClass", "WebAdapterClass\WebAdapterClass.csproj", "{07A7BF01-DEE4-4856-AC3E-2CA77EC82144}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceClass", "InterfaceClass\InterfaceClass.csproj", "{4B0FAE59-6A69-4837-A7A6-BBEE2ECD3C7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterfaceClass", "InterfaceClass\InterfaceClass.csproj", "{4B0FAE59-6A69-4837-A7A6-BBEE2ECD3C7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
