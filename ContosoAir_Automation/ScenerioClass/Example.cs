@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 using WebAdapterClass;
 using OpenQA.Selenium.Chrome;
 
-namespace SceneroClass
+namespace ScenerioClass
 {
     public class PageTitleTest
     {
