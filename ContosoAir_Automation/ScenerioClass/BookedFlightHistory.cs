@@ -1,4 +1,22 @@
-﻿using OpenQA.Selenium;
+﻿/*
+
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0 
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+
+*/
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +26,6 @@ using InterfaceClass;
 using WebAdapterClass;
 namespace ScenerioClass
 {
-    /// <summary>
-    /// Test class to validate the functionality of viewing flight history.
-    /// </summary>
     [TestFixture]
     public class BookedFlightHistoryTests
     {
@@ -22,7 +37,7 @@ namespace ScenerioClass
         [SetUp]
         public void Setup()
         {
-            _flightHistory = new BookedFlightHistory();  // Create a new instance of BookedFlightHistory
+            _flightHistory = new BookedFlightHistory(); // Create a new instance of BookedFlightHistory
         }
 
         /// <summary>
@@ -31,19 +46,12 @@ namespace ScenerioClass
         [Test]
         public void TestViewBookedFlights()
         {
-            // Navigate to the login page
             _flightHistory.NavigateToLoginPage();
-
-            // Login with valid credentials
             _flightHistory.Login("test_user", "test_password");
 
-            // Navigate to the "My Booked Flights" page
             _flightHistory.NavigateToMyBookedFlightsPage();
 
-            // Get the list of booked flights
             IList<string> bookedFlights = _flightHistory.GetBookedFlights();
-
-            // Verify that there are booked flights
             Assert.IsTrue(bookedFlights.Count > 0, "No booked flights found.");
         }
 
@@ -53,27 +61,55 @@ namespace ScenerioClass
         [Test]
         public void TestViewFlightDetails()
         {
-            // Navigate to the login page
             _flightHistory.NavigateToLoginPage();
-
-            // Login with valid credentials
             _flightHistory.Login("test_user", "test_password");
 
-            // Navigate to the "My Booked Flights" page
             _flightHistory.NavigateToMyBookedFlightsPage();
 
-            // Get the list of booked flights
             IList<string> bookedFlights = _flightHistory.GetBookedFlights();
-
-            // Ensure that there are booked flights
             Assert.IsTrue(bookedFlights.Count > 0, "No booked flights found.");
 
-            // View details for the first flight (index 0)
             _flightHistory.ViewFlightDetails(0);
 
-            // Verify that the flight details page is displayed
+            // Validate that the flight details page is displayed (you may need to adjust XPath here based on actual UI)
             var flightDetailsTitle = ((BookedFlightHistory)_flightHistory).Driver.FindElement(By.XPath("/html/body/navbar/nav/div/div[2]/div[2]/ul/li[2]/a"));
             Assert.IsNotNull(flightDetailsTitle, "Flight details page not displayed.");
+        }
+
+        /// <summary>
+        /// Test to verify the "Shop for another flight" button functionality.
+        /// </summary>
+        [Test]
+        public void TestShopForAnotherFlight()
+        {
+            _flightHistory.NavigateToLoginPage();
+            _flightHistory.Login("test_user", "test_password");
+
+            _flightHistory.NavigateToMyBookedFlightsPage();
+
+            _flightHistory.ShopForAnotherFlight();
+
+            // Validate that navigation occurs correctly
+            var pageTitle = ((BookedFlightHistory)_flightHistory).Driver.Title;
+            Assert.IsFalse(pageTitle.Contains("Booking Page"), "Failed to navigate to booking page.");
+        }
+
+        /// <summary>
+        /// Test to verify the "Get another flight" button functionality.
+        /// </summary>
+        [Test]
+        public void TestGetAnotherFlight()
+        {
+            _flightHistory.NavigateToLoginPage();
+            _flightHistory.Login("test_user", "test_password");
+
+            _flightHistory.NavigateToMyBookedFlightsPage();
+
+            _flightHistory.GetAnotherFlight();
+
+            // Validate that navigation occurs correctly
+            var pageTitle = ((BookedFlightHistory)_flightHistory).Driver.Title;
+            Assert.IsFalse(pageTitle.Contains("Booking Page"), "Failed to navigate to booking page.");
         }
 
         /// <summary>
@@ -82,8 +118,7 @@ namespace ScenerioClass
         [TearDown]
         public void Cleanup()
         {
-            // Clean up the browser session
-            _flightHistory.Cleanup();
+            _flightHistory.Cleanup(); // Close the browser session
         }
     }
 }

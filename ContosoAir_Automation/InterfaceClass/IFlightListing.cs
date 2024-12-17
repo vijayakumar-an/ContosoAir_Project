@@ -1,80 +1,64 @@
-﻿using OpenQA.Selenium;
+﻿/*
+
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0 
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+
+*/
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using OpenQA.Selenium;
+using System;
+
 namespace InterfaceClass
 {
     /// <summary>
-    /// Interface for flight listing and booking functionality.
+    /// Interface that defines the methods for the flight listing functionality,
+    /// including login, searching for flights, and listing available flights.
     /// </summary>
     public interface IFlightListing
     {
         /// <summary>
-        /// Property to get the WebDriver instance.
+        /// Logs in to the application with the provided username and password.
         /// </summary>
-        IWebDriver Driver { get; }
-
-        /// <summary>
-        /// Navigates to the booking page and handles login if required.
-        /// </summary>
-        void NavigateToBookingPage();
-
-        /// <summary>
-        /// Selects the flight type (Round trip, One way, etc.).
-        /// </summary>
-        void SelectFlightType(string flightType);
-
-        /// <summary>
-        /// Selects the departure location from a dropdown.
-        /// </summary>
-        void SelectDepartureLocation(string fromLocation);
-
-        /// <summary>
-        /// Selects the arrival location from a dropdown.
-        /// </summary>
-        void SelectArrivalLocation(string toLocation);
-
-        /// <summary>
-        /// Sets the departure date for the flight.
-        /// </summary>
-        void SetDepartureDate(DateTime departureDate);
-
-        /// <summary>
-        /// Sets the return date for the flight.
-        /// </summary>
-        void SetReturnDate(DateTime returnDate);
-
-        /// <summary>
-        /// Selects the number of passengers for the flight.
-        /// </summary>
-        void SelectPassengers(int numberOfPassengers);
-
-        /// <summary>
-        /// Submits the flight search request.
-        /// </summary>
-        void SubmitFlightSearch();
-
-        /// <summary>
-        /// Retrieves a list of available flights after the search.
-        /// </summary>
-        IList<string> GetAvailableFlights();
-
-        /// <summary>
-        /// Selects a flight from the available listings.
-        /// </summary>
-        void SelectFlight(int flightIndex);
-
-        /// <summary>
-        /// Logs the user into the website.
-        /// </summary>
+        /// <param name="username">The username to log in.</param>
+        /// <param name="password">The password to log in.</param>
         void Login(string username, string password);
 
         /// <summary>
-        /// Cleans up and closes the browser after the test.
+        /// Searches for flights with the specified parameters.
         /// </summary>
-        void Cleanup();
+        /// <param name="from">The departure airport (e.g., "New York").</param>
+        /// <param name="to">The arrival airport (e.g., "Los Angeles").</param>
+        /// <param name="departureDate">The departure date of the flight.</param>
+        /// <param name="passengers">The number of passengers for the flight.</param>
+        /// <param name="returnDate">The return date of the flight (if applicable).</param>
+        void SearchFlights(string from, string to, DateTime departureDate, int passengers, DateTime returnDate);
+
+        /// <summary>
+        /// Lists all available flights after performing the search.
+        /// </summary>
+        List<IWebElement> ListAvailableFlights();
+
+        /// <summary>
+        /// Closes the WebDriver and shuts down the browser session.
+        /// </summary>
+        void Close();
     }
 }

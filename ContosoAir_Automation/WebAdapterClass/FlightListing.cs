@@ -1,4 +1,22 @@
-﻿using InterfaceClass;
+﻿/*
+
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0 
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+
+*/
+using InterfaceClass;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -9,175 +27,117 @@ using System.Linq;
 namespace WebAdapterClass
 {
     /// <summary>
-    /// Implementation of the IFlightListing interface for handling flight bookings using Selenium WebDriver.
+    /// Class for performing flight listing functionalities, including login and searching for available flights.
     /// </summary>
-    public class FlightListing : IFlightListing
+    public class FlightListingPage : IFlightListing
     {
-        private IWebDriver _driver;
-        private WebDriverWait _wait;
+        private IWebDriver driver;
 
-        /// <summary>
-        /// Initializes the WebDriver and WebDriverWait.
-        /// </summary>
-        public FlightListing()
+        public FlightListingPage()
         {
-            // Initialize Chrome WebDriver
-            _driver = new ChromeDriver();
-            _driver.Manage().Window.Maximize();  // Maximize the browser window
-
-            // Initialize WebDriverWait with a 10-second timeout
-            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            // Initialize WebDriver (e.g., ChromeDriver)
+            driver = new ChromeDriver();
         }
 
         /// <summary>
-        /// Property to expose the driver for testing purposes.
+        /// Performs the login functionality by navigating to the login page and entering credentials.
         /// </summary>
-        public IWebDriver Driver
-        {
-            get { return _driver; }
-        }
-
-        /// <summary>
-        /// Navigates to the booking page and handles login if required.
-        /// </summary>
-        public void NavigateToBookingPage()
-        {
-            _driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
-
-            // Wait for and click on the "Login" button
-            var loginButton = _wait.Until(driver => driver.FindElement(By.XPath("/html/body/navbar/nav/div/div[2]/div[2]/ul/li[2]/a")));
-            loginButton.Click();
-        }
-        /// <summary>
-        /// Logs the user into the website.
-        /// </summary>
+        /// <param name="username">The username to log in.</param>
+        /// <param name="password">The password to log in.</param>
         public void Login(string username, string password)
         {
-            var usernameField = _wait.Until(driver => driver.FindElement(By.Id("username")));
-            var passwordField = _wait.Until(driver => driver.FindElement(By.Id("password")));
-            var loginButton = _wait.Until(driver => driver.FindElement(By.XPath("/html/body/main/section/div/div/div[3]/div/form/fieldset/button")));
+            // Navigate to the application URL
+            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
+            driver.Manage().Window.Size = new System.Drawing.Size(1296, 688);  // Set window size
 
-            usernameField.SendKeys(username);
-            passwordField.SendKeys(password);
-            loginButton.Click();
+            // Click on the "Login" link
+            driver.FindElement(By.LinkText("Login")).Click();
 
-            // Wait for the profile to appear, indicating successful login
-            _wait.Until(driver => driver.FindElement(By.XPath("/html/body/navbar/nav/div/div[1]/span/a")));
+            // Input the username and password
+            driver.FindElement(By.Id("username")).SendKeys(username);
+            driver.FindElement(By.Id("password")).SendKeys(password);
+
+            // Click the login button
+            driver.FindElement(By.CssSelector(".btn")).Click();
         }
 
         /// <summary>
-        /// Selects the flight type (Round trip, One way, etc.).
+        /// Performs the flight search by selecting the departure and arrival airports, dates, and passengers.
         /// </summary>
-        public void SelectFlightType(string flightType)
+        /// <param name="from">The departure airport (e.g., "New York").</param>
+        /// <param name="to">The arrival airport (e.g., "Los Angeles").</param>
+        /// <param name="departureDate">The departure date of the flight.</param>
+        /// <param name="passengers">The number of passengers for the flight.</param>
+        /// <param name="returnDate">The return date of the flight (if applicable).</param>
+        public void SearchFlights(string from, string to, DateTime departureDate, int passengers, DateTime returnDate)
         {
-            var flightTypeOption = _wait.Until(driver => driver.FindElement(By.XPath($"//label[contains(text(), '{flightType}')]")));
-            flightTypeOption.Click();
+            // Click on the "Book" button
+            driver.FindElement(By.LinkText("Book")).Click();
+
+            // Select Departure Airport
+            var fromDropdown = driver.FindElement(By.Id("fromCode"));
+            fromDropdown.FindElement(By.XPath($"//option[. = '{from}']")).Click();
+            Thread.Sleep(2000);
+
+            // Select Arrival Airport
+            var toDropdown = driver.FindElement(By.Id("toCode"));
+            toDropdown.FindElement(By.XPath($"//option[. = '{to}']")).Click();
+            Thread.Sleep(2000);
+
+            // Select Departure Date (with WebDriverWait)
+            driver.FindElement(By.Id("dpa")).Click();
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var departureDateCell = wait.Until(drv =>
+                drv.FindElement(By.XPath($"//td[contains(text(), '{departureDate.Day}')]"))
+            );
+            departureDateCell.Click();
+
+            // Select Passengers
+            driver.FindElement(By.Id("passengers")).Click();
+            var passengersDropdown = driver.FindElement(By.Id("passengers"));
+            passengersDropdown.FindElement(By.XPath($"//option[. = '{passengers}']")).Click();
+
+            // Select Return Date (with WebDriverWait)
+            driver.FindElement(By.Id("dpb")).Click();
+            var returnDateCell = wait.Until(drv =>
+                drv.FindElement(By.XPath($"//td[contains(text(), '{returnDate.Day}')]"))
+            );
+            returnDateCell.Click();
+            //Click on Find Flights button
+            driver.FindElement(By.XPath("/html/body/main/section/div/div/div[3]/div/form/fieldset/button")).Click();
         }
 
         /// <summary>
-        /// Selects the departure location from a dropdown.
+        /// Lists all available flights after a search is performed.
         /// </summary>
-        public void SelectDepartureLocation(string fromLocation)
+        public List<IWebElement> ListAvailableFlights()
         {
-            var fromDropdown = new SelectElement(_driver.FindElement(By.Id("fromCode")));
-            fromDropdown.SelectByText(fromLocation);
-        }
+            // Example selector for listing flight results
+            var flightListings = driver.FindElements(By.CssSelector(".block-flights-results-list-item")).ToList();
 
-        /// <summary>
-        /// Selects the arrival location from a dropdown.
-        /// </summary>
-        public void SelectArrivalLocation(string toLocation)
-        {
-            var toDropdown = new SelectElement(_driver.FindElement(By.Id("toCode")));
-            toDropdown.SelectByText(toLocation);
-        }
-
-        /// <summary>
-        /// Sets the departure date for the flight.
-        /// </summary>
-        public void SetDepartureDate(DateTime departureDate)
-        {
-            var departDateInput = _driver.FindElement(By.Id("DepartDate"));
-            departDateInput.SendKeys(departureDate.ToString("yyyy-MM-dd"));
-        }
-
-        /// <summary>
-        /// Sets the return date for the flight.
-        /// </summary>
-        public void SetReturnDate(DateTime returnDate)
-        {
-            var returnDateInput = _driver.FindElement(By.Id("ReturnDate"));
-            returnDateInput.SendKeys(returnDate.ToString("yyyy-MM-dd"));
-        }
-
-        /// <summary>
-        /// Selects the number of passengers for the flight.
-        /// </summary>
-        public void SelectPassengers(int numberOfPassengers)
-        {
-            var passengersDropdown = new SelectElement(_driver.FindElement(By.Id("Passengers")));
-            passengersDropdown.SelectByValue(numberOfPassengers.ToString());
-        }
-
-        /// <summary>
-        /// Submits the flight search request.
-        /// </summary>
-        public void SubmitFlightSearch()
-        {
-            var searchButton = _driver.FindElement(By.XPath("//button[contains(text(), 'Search')]"));
-            searchButton.Click();
-        }
-
-        /// <summary>
-        /// Retrieves a list of available flights after the search.
-        /// </summary>
-        public IList<string> GetAvailableFlights()
-        {
-            var availableFlightsTitle = _wait.Until(driver => driver.FindElement(By.XPath("//h2[contains(text(), 'Available flights')]")));
-            var flightListings = _driver.FindElements(By.XPath("//div[contains(@class, 'flight-listing')]"));
-            return flightListings.Select(flight => flight.Text).ToList();
-        }
-
-        /// <summary>
-        /// Selects a flight from the available listings.
-        /// </summary>
-        public void SelectFlight(int flightIndex)
-        {
-            var flightListings = _driver.FindElements(By.XPath("//div[contains(@class, 'flight-listing')]"));
-            if (flightIndex < flightListings.Count)
+            if (flightListings.Count == 0)
             {
-                var selectButton = flightListings[flightIndex].FindElement(By.XPath(".//button[contains(text(), 'Select')]"));
-                selectButton.Click();
+                Console.WriteLine("No flights available.");
             }
             else
             {
-                throw new ArgumentException("Invalid flight index.");
+                Console.WriteLine("Available Flights:");
+                foreach (var flight in flightListings)
+                {
+                    Console.WriteLine(flight.Text);  // Display flight details
+                }
             }
-        }
-        
 
-        /// <summary>
-        /// Checks if the login form is required (by detecting the username field).
-        /// </summary>
-        private bool IsLoginRequired()
-        {
-            try
-            {
-                _wait.Until(driver => driver.FindElement(By.Id("username")));
-                return true;
-            }
-            catch (WebDriverTimeoutException)
-            {
-                return false;
-            }
+            // Return the list of available flights
+            return flightListings;
         }
 
         /// <summary>
-        /// Cleans up and closes the browser after the test.
+        /// Closes the WebDriver and shuts down the browser session.
         /// </summary>
-        public void Cleanup()
+        public void Close()
         {
-            _driver.Quit();
+            driver.Quit();  // Ensure the browser is closed and resources are released
         }
     }
 }
