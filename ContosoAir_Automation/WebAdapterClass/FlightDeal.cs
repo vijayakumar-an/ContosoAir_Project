@@ -13,6 +13,8 @@ software distributed under the License is distributed on an
 KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
+
+Author: Sravya
 */
 using InterfaceClass;
 using OpenQA.Selenium;
@@ -68,16 +70,6 @@ namespace WebAdapterClass
             // Find the title element by XPath and return its text
             IWebElement titleElement = driver.FindElement(By.XPath("//h2[normalize-space()='Flight deals']"));
             return titleElement.Text;
-        }
-
-        /// <summary>
-        /// Clicks the button in the first flight deal box to perform an action (e.g., open or select the deal).
-        /// </summary>
-        public void BoxButton()
-        {
-            // Find the button element inside the first flight deal box and click it
-            IWebElement buttonElement = driver.FindElement(By.XPath("/html/body/main/main/div/div/div[2]/deals/ul/li[1]/span/span/span[3]/button"));
-            buttonElement.Click();
         }
 
         /// <summary>
