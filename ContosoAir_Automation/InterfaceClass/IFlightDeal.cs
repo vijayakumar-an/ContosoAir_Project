@@ -61,10 +61,10 @@ namespace InterfaceClass
         /// <param name="i">The index of the flight deal.</param>
         /// <returns>A string representing the description of the flight deal.</returns>
         string BoxDescription(int i);
-
         /// <summary>
-        /// Simulates clicking the button associated with the flight deal, triggering any associated actions.
+        /// Closes the WebDriver and shuts down the browser session.
         /// </summary>
-        void BoxButton();
+        void Close();
+
     }
 }

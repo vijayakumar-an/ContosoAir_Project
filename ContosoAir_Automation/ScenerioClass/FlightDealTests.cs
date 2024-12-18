@@ -14,310 +14,162 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenQA.Selenium;
+using NUnit.Framework;
+using System.Threading;
+using WebAdapterClass;
+using InterfaceClass;
 
 namespace ScenerioClass
 {
     /// <summary>
     /// Test class for verifying functionalities of the FlightDeal class.
-    /// This class contains various tests for login, retrieving flight details, and interacting with flight deal UI elements.
+    /// This class contains various tests for login, retrieving flight details,
+    /// and interacting with flight deal UI elements.
     /// </summary>
     public class FlightDealTests
     {
-        private WebAdapterClass.FlightDeal flightdeal;
-        private IWebDriver driver;
+        private IFlightDeal flightdeal;
 
         /// <summary>
-        /// Setup method runs before each test to initialize the WebDriver and navigate to the FlightDeal page.
+        /// Setup method to initialize the WebDriver and FlightDeal instance before each test.
+        /// This method is executed before each test method to set up the test environment.
         /// </summary>
-        [SetUp] // Marks this method to run before each test
-        public void Setup()
+        [SetUp]
+        public void SetUp()
         {
-            // Initialize WebDriver and Homepage instance
-            driver = new OpenQA.Selenium.Chrome.ChromeDriver();
-            flightdeal = new WebAdapterClass.FlightDeal(driver);
-            flightdeal.NavigateToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
+            // Initialize the FlightDeal instance (which interacts with the flight deal page).
+            flightdeal = new FlightDeal();
         }
 
         /// <summary>
-        /// Cleanup method that runs after each test to dispose of the WebDriver.
+        /// TearDown method to close the browser after each test.
+        /// This method is executed after each test method to clean up the environment.
         /// </summary>
         [TearDown]
         public void TearDown()
         {
-            driver.Dispose();
+            // Close the browser to ensure resources are freed after each test
+            flightdeal.Close();
         }
 
         /// <summary>
         /// Test for retrieving the title of the flight deals page after performing login.
+        /// Verifies that the title of the flight deals page is correct after a successful login.
         /// </summary>
-        [Test] // Test for retrieving subtitle
+        [Test]
         public void GetTitle()
         {
-            // Define test username and password
-            string username = "admin";
-            string password = "admin";
+            string username = "admin";  // Test username
+            string password = "admin";  // Test password
 
-            // Perform login steps using the homepage object
+            // Perform login to the flight deal page
             flightdeal.PerformLogin(username, password);
-            Thread.Sleep(2000);
 
+            // Expected subtitle on the flight deals page
             string expectedSubtitle = "Flight deals";
+            // Get the actual subtitle from the page
             string actualSubtitle = flightdeal.Title();
 
+            // Assert that the actual subtitle matches the expected subtitle
             Assert.That(actualSubtitle, Is.EqualTo(expectedSubtitle));
         }
 
         /// <summary>
-        /// Test for clicking the checkbox button on the flight deal page.
-        /// </summary>
-        [Test] // Test for clicking the checkbox button
-        public void TestBoxOneButton()
-        {
-            // Define test username and password
-            string username = "admin";
-            string password = "admin";
-
-            // Perform login steps
-            flightdeal.PerformLogin(username, password);
-
-            // Click on the checkbox button
-            flightdeal.BoxButton();
-
-            // Optionally add assertions to confirm the expected result after the click
-        }
-
-        /// <summary>
-        /// Test for verifying the source and destination of the first flight deal box.
+        /// Test for verifying the source and destination of the flight deals.
+        /// Iterates over the flight deal boxes and checks the source and destination values.
         /// </summary>
         [Test]
-        public void TestBoxOneSourceToDestination()
+        public void TestBoxSourceToDestination()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "admin";  // Test username
+            string password = "admin";  // Test password
 
+            // Perform login to the flight deal page
             flightdeal.PerformLogin(username, password);
 
-            // Expected values for source and destination
+            // Expected source and destinations for the flight deal boxes
             string expectedSource = "Seattle (SEA)";
-            string expectedDestination = "to Barcelona (BCN)";  // Replace with the actual destination
+            var expectedDestinations = new[]
+            {
+                "to Barcelona (BCN)",
+                "to Singapore (SIN)",
+                "to Puerto Nare (NAR)",
+                "to Hounslow (LHR)"
+            };
 
-            // Get the actual source and destination
-            var (actualSource, actualDestination) = flightdeal.BoxSourceToDestination(1);
-
-            // Assert both source and destination
-            Assert.That(actualSource, Is.EqualTo(expectedSource));
-            Assert.That(actualDestination, Is.EqualTo(expectedDestination));
+            // Iterate over the expected destinations and verify the source and destination
+            for (int i = 0; i < expectedDestinations.Length; i++)
+            {
+                var (actualSource, actualDest) = flightdeal.BoxSourceToDestination(i + 1);
+                Assert.That(actualSource, Is.EqualTo(expectedSource));
+                Assert.That(actualDest, Is.EqualTo(expectedDestinations[i]));
+            }
         }
 
         /// <summary>
-        /// Test for verifying the source and destination of the second flight deal box.
+        /// Test for verifying the end dates of the flight deals.
+        /// Iterates over the flight deal boxes and checks the end dates for each.
         /// </summary>
         [Test]
-        public void TestBoxTwoSourceToDestination()
+        public void TestBoxEndDates()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "admin";  // Test username
+            string password = "admin";  // Test password
 
+            // Perform login to the flight deal page
             flightdeal.PerformLogin(username, password);
 
-            // Expected values for source and destination
-            string expectedSource = "Seattle (SEA)";
-            string expectedDestination = "to Singapore (SIN)";  // Replace with the actual destination
+            // Expected end dates for the flight deal boxes
+            var expectedEndDates = new[]
+            {
+                "Purchase by Feb 13th 2018",  // For box 1
+                "Purchase by Feb 13th 2017",  // For box 2
+                "Purchase by Feb 13th 2017",  // For box 3
+                "Purchase by Feb 13th 2017"   // For box 4
+            };
 
-            // Get the actual source and destination
-            var (actualSource, actualDestination) = flightdeal.BoxSourceToDestination(2);
-
-            // Assert both source and destination
-            Assert.That(actualSource, Is.EqualTo(expectedSource));
-            Assert.That(actualDestination, Is.EqualTo(expectedDestination));
+            // Iterate through the boxes and validate the end date for each
+            for (int i = 0; i < expectedEndDates.Length; i++)
+            {
+                string actualEndDate = flightdeal.BoxEndDate(i + 1);  // i + 1 because BoxEndDate is 1-based
+                Assert.That(actualEndDate, Is.EqualTo(expectedEndDates[i]));
+            }
         }
 
         /// <summary>
-        /// Test for verifying the source and destination of the third flight deal box.
+        /// Test for verifying the descriptions of the flight deals.
+        /// Iterates over the flight deal boxes and checks the descriptions.
         /// </summary>
         [Test]
-        public void TestBoxThreeSourceToDestination()
+        public void TestBoxDescriptions()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "admin";  // Test username
+            string password = "admin";  // Test password
 
+            // Perform login to the flight deal page
             flightdeal.PerformLogin(username, password);
 
-            // Expected values for source and destination
-            string expectedSource = "Seattle (SEA)";
-            string expectedDestination = "to Puerto Nare (NAR)";  // Replace with the actual destination
+            // Prices for the four flight deal boxes
+            var prices = new[] { 479, 528, 535, 626 };
 
-            // Get the actual source and destination
-            var (actualSource, actualDestination) = flightdeal.BoxSourceToDestination(3);
+            // Iterate through the boxes and validate the description for each
+            for (int i = 0; i < prices.Length; i++)
+            {
+                // Expected description format for each box
+                string expectedDescription = string.Format("From $ {0} ONE WAY", prices[i]);
 
-            // Assert both source and destination
-            Assert.That(actualSource, Is.EqualTo(expectedSource));
-            Assert.That(actualDestination, Is.EqualTo(expectedDestination));
-        }
+                // Get the actual description and normalize it for comparison
+                string actualDescription = flightdeal.BoxDescription(i + 1)
+                    .Replace("\r\n", " ")  // Remove any newline characters
+                    .Trim()                // Remove any leading or trailing spaces
+                    .ToLower();            // Normalize to lowercase for case-insensitive comparison
 
-        /// <summary>
-        /// Test for verifying the source and destination of the fourth flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxFourSourceToDestination()
-        {
-            string username = "admin";
-            string password = "admin";
+                // Normalize expected description similarly
+                string normalizedExpectedDescription = expectedDescription.ToLower().Trim();
 
-            flightdeal.PerformLogin(username, password);
-
-            // Expected values for source and destination
-            string expectedSource = "Seattle (SEA)";
-            string expectedDestination = "to Hounslow (LHR)";  // Replace with the actual destination
-
-            // Get the actual source and destination
-            var (actualSource, actualDestination) = flightdeal.BoxSourceToDestination(4);
-
-            // Assert both source and destination
-            Assert.That(actualSource, Is.EqualTo(expectedSource));
-            Assert.That(actualDestination, Is.EqualTo(expectedDestination));
-        }
-
-        /// <summary>
-        /// Test for verifying the end date of the first flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxOneEndDate()
-        {
-            string username = "admin";
-            string password = "admin";
-
-            flightdeal.PerformLogin(username, password);
-
-            string expectedEndDate = "Purchase by Feb 13th 2018";
-            string actualEndDate = flightdeal.BoxEndDate(1);
-
-            Assert.That(actualEndDate, Is.EqualTo(expectedEndDate));
-        }
-
-        /// <summary>
-        /// Test for verifying the end date of the second flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxTwoEndDate()
-        {
-            string username = "admin";
-            string password = "admin";
-
-            flightdeal.PerformLogin(username, password);
-
-            string expectedEndDate = "Purchase by Feb 13th 2017";
-            string actualEndDate = flightdeal.BoxEndDate(2);
-
-            Assert.That(actualEndDate, Is.EqualTo(expectedEndDate));
-        }
-
-        /// <summary>
-        /// Test for verifying the end date of the third flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxThreeEndDate()
-        {
-            string username = "admin";
-            string password = "admin";
-
-            flightdeal.PerformLogin(username, password);
-
-            string expectedEndDate = "Purchase by Feb 13th 2017";
-            string actualEndDate = flightdeal.BoxEndDate(3);
-
-            Assert.That(actualEndDate, Is.EqualTo(expectedEndDate));
-        }
-
-        /// <summary>
-        /// Test for verifying the end date of the fourth flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxFourEndDate()
-        {
-            string username = "admin";
-            string password = "admin";
-
-            flightdeal.PerformLogin(username, password);
-
-            string expectedEndDate = "Purchase by Feb 13th 2017";
-            string actualEndDate = flightdeal.BoxEndDate(4);
-
-            Assert.That(actualEndDate, Is.EqualTo(expectedEndDate));
-        }
-
-        /// <summary>
-        /// Test for verifying the description of the first flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxOneDescription()
-        {
-            string username = "admin";
-            string password = "admin";
-
-            flightdeal.PerformLogin(username, password);
-
-            string expectedDescription = "From $ 479 ONEWAY";
-            string actualDescription = flightdeal.BoxDescription(1);
-
-            Assert.That(actualDescription, Is.EqualTo(actualDescription));
-        }
-
-        /// <summary>
-        /// Test for verifying the description of the second flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxTwoDescription()
-        {
-            string username = "admin";
-            string password = "admin";
-
-            flightdeal.PerformLogin(username, password);
-
-            string expectedDescription = "From $ 528 ONEWAY";
-            string actualDescription = flightdeal.BoxDescription(2);
-
-            Assert.That(actualDescription, Is.EqualTo(actualDescription));
-        }
-
-        /// <summary>
-        /// Test for verifying the description of the third flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxThreeDescription()
-        {
-            string username = "admin";
-            string password = "admin";
-
-            flightdeal.PerformLogin(username, password);
-
-            string expectedDescription = "From $ 535 ONEWAY";
-            string actualDescription = flightdeal.BoxDescription(3);
-
-            Assert.That(actualDescription, Is.EqualTo(actualDescription));
-        }
-
-        /// <summary>
-        /// Test for verifying the description of the fourth flight deal box.
-        /// </summary>
-        [Test]
-        public void TestBoxFourDescription()
-        {
-            string username = "admin";
-            string password = "admin";
-
-            flightdeal.PerformLogin(username, password);
-
-            string expectedDescription = "From $ 626 ONEWAY";
-            string actualDescription = flightdeal.BoxDescription(4);
-
-            Assert.That(actualDescription, Is.EqualTo(actualDescription));
+                // Assert that the actual description matches the expected description
+                Assert.That(actualDescription, Is.EqualTo(normalizedExpectedDescription));
+            }
         }
     }
 }
