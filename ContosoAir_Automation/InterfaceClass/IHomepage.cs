@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 
 namespace InterfaceClass
 {
+
+    /// <summary>
+    /// Defines the contract for a homepage interface that includes navigation, login functionality, 
+    /// and retrieval of various elements like titles, subtitles, and images.
+    /// </summary>
     public interface IHomepage
     {
         /// <summary>
         /// Navigates to the specified URL.
         /// </summary>
+        /// <param name="url">The URL to navigate to.</param>
         void NavigateToUrl(string url);
 
         /// <summary>
@@ -20,35 +26,61 @@ namespace InterfaceClass
         /// <param name="password">The password for login.</param>
         void PerformLogin(string username, string password);
 
-        void getLogo();
         /// <summary>
-        /// Retrieves the title element's text.
+        /// Checks and retrieves the homepage logo.
         /// </summary>
-        /// <returns>Title text</returns>
+        void getLogo();
+
+        /// <summary>
+        /// Retrieves the text of the title element.
+        /// </summary>
+        /// <returns>The text of the title element.</returns>
         string getTitle();
 
         /// <summary>
-        /// Retrieves the subtitle element's text.
+        /// Retrieves the text of the subtitle element.
         /// </summary>
-        /// <returns>Subtitle text</returns>
+        /// <returns>The text of the subtitle element.</returns>
         string subTitle();
 
         /// <summary>
-        /// Retrieves the suggestion title's text.
+        /// Retrieves the text of the suggestion title element.
         /// </summary>
-        /// <returns>Suggestion title text</returns>
+        /// <returns>The text of the suggestion title.</returns>
         string getSuggestTitle();
 
+        /// <summary>
+        /// Verifies the presence of the Hawaii image on the homepage.
+        /// </summary>
         void checkHawaiiImage();
 
+        /// <summary>
+        /// Retrieves the caption for the Hawaii image.
+        /// </summary>
+        /// <returns>The caption text for the Hawaii image.</returns>
         string checkHawaiiCaption();
 
+        /// <summary>
+        /// Verifies the presence of the Paris image on the homepage.
+        /// </summary>
         void checkParisImage();
 
+        /// <summary>
+        /// Retrieves the caption for the Paris image.
+        /// </summary>
+        /// <returns>The caption text for the Paris image.</returns>
         string checkParisCaption();
 
+        /// <summary>
+        /// Verifies the presence of the Barcelona image on the homepage.
+        /// </summary>
         void checkBarcelonaImage();
-        string checkBarcelonaCaption();
 
+        /// <summary>
+        /// Retrieves the caption for the Barcelona image.
+        /// </summary>
+        /// <returns>The caption text for the Barcelona image.</returns>
+        string checkBarcelonaCaption();
     }
 }
+

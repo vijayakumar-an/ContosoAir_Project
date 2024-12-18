@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 
 namespace ScenerioClass
 {
+    /// <summary>
+    /// Contains test cases for verifying the functionality of the Homepage class.
+    /// </summary>
     public class HomepageTests
     {
         private WebAdapterClass.Homepage homepage;
         private IWebDriver driver;
 
+        /// <summary>
+        /// Sets up the test environment by initializing the WebDriver and the Homepage instance.
+        /// </summary>
         [SetUp] // Marks this method to run before each test
         public void Setup()
         {
@@ -21,12 +27,15 @@ namespace ScenerioClass
             homepage.NavigateToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
         }
 
+        /// <summary>
+        /// Verifies that the logo image is displayed on the homepage.
+        /// </summary>
         [Test]
         public void getLogo()
         {
             // Define test username and password
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login steps using the homepage object
             homepage.PerformLogin(username, password);
@@ -35,12 +44,15 @@ namespace ScenerioClass
             Assert.DoesNotThrow(() => homepage.getLogo(), "Logo image is not displayed using Relative XPath.");
         }
 
+        /// <summary>
+        /// Tests the retrieval of the homepage title and verifies it matches the expected value.
+        /// </summary>
         [Test] // Test for retrieving the title
         public void getTitle()
         {
             // Define test username and password
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login steps using the homepage object
             homepage.PerformLogin(username, password);
@@ -55,12 +67,15 @@ namespace ScenerioClass
             Assert.That(actual, Is.EqualTo("Where do you\r\nwant to go?"));
         }
 
+        /// <summary>
+        /// Tests the retrieval of the subtitle and verifies it matches the expected value.
+        /// </summary>
         [Test] // Test for retrieving subtitle
         public void GetSubtitle()
         {
             // Define test username and password
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login steps using the homepage object
             homepage.PerformLogin(username, password);
@@ -71,12 +86,15 @@ namespace ScenerioClass
             Assert.That(actualSubtitle, Is.EqualTo(expectedSubtitle));
         }
 
+        /// <summary>
+        /// Tests the retrieval of the suggested title and verifies it matches the expected value.
+        /// </summary>
         [Test] // Test for retrieving recommended title
         public void GetSuggestedTitle()
         {
             // Define test username and password
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login steps using the homepage object
             homepage.PerformLogin(username, password);
@@ -87,11 +105,14 @@ namespace ScenerioClass
             Assert.That(actualSuggestedTitle, Is.EqualTo(expectedSuggestedTitle));
         }
 
+        /// <summary>
+        /// Verifies that the Hawaii image is displayed on the homepage.
+        /// </summary>
         [Test]
         public void checkHawaiiImage()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login
             homepage.PerformLogin(username, password);
@@ -100,11 +121,14 @@ namespace ScenerioClass
             Assert.DoesNotThrow(() => homepage.checkHawaiiImage(), "Hawaii image is not displayed using Relative XPath.");
         }
 
+        /// <summary>
+        /// Verifies that the Hawaii caption matches the expected text.
+        /// </summary>
         [Test]
         public void checkHawaiiCaption()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             homepage.PerformLogin(username, password);
 
@@ -120,11 +144,14 @@ namespace ScenerioClass
             Assert.DoesNotThrow(() => homepage.checkParisCaption(), "The Hawaii caption is not displayed on the homepage.");
         }
 
+        /// <summary>
+        /// Verifies that the Paris image is displayed on the homepage.
+        /// </summary>
         [Test]
         public void checkParisImageTest()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login
             homepage.PerformLogin(username, password);
@@ -133,11 +160,14 @@ namespace ScenerioClass
             Assert.DoesNotThrow(() => homepage.checkParisImage(), "Paris image is not displayed using Relative XPath.");
         }
 
+        /// <summary>
+        /// Verifies that the Paris caption matches the expected text.
+        /// </summary>
         [Test]
         public void checkParisCaption()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login
             homepage.PerformLogin(username, password);
@@ -154,11 +184,14 @@ namespace ScenerioClass
             Assert.DoesNotThrow(() => homepage.checkParisCaption(), "The Paris caption is not displayed on the homepage.");
         }
 
+        /// <summary>
+        /// Verifies that the Barcelona image is displayed on the homepage.
+        /// </summary>
         [Test]
         public void checkBarcelonaImage()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login
             homepage.PerformLogin(username, password);
@@ -167,11 +200,14 @@ namespace ScenerioClass
             Assert.DoesNotThrow(() => homepage.checkBarcelonaImage(), "Barcelona image is not displayed using Relative XPath.");
         }
 
+        /// <summary>
+        /// Verifies that the Barcelona caption matches the expected text.
+        /// </summary>
         [Test]
         public void checkBarcelonaCaption()
         {
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             homepage.PerformLogin(username, password);
 
@@ -187,14 +223,15 @@ namespace ScenerioClass
             Assert.DoesNotThrow(() => homepage.checkBarcelonaCaption(), "The Barcelona caption is not displayed on the homepage.");
         }
 
-
-
+        /// <summary>
+        /// Tests the login functionality by performing a login operation.
+        /// </summary>
         [Test] // Test for performing login
         public void PerformLoginTest()
         {
             // Define test username and password
-            string username = "admin";
-            string password = "admin";
+            string username = "Vijay";
+            string password = "Vijay";
 
             // Perform login steps using the _homepage object
             homepage.PerformLogin(username, password);
@@ -202,6 +239,10 @@ namespace ScenerioClass
             // No need for logout verification, you can add another assertion if needed,
             // like checking that some element exists after login.
         }
+
+        /// <summary>
+        /// Cleans up the test environment by closing the WebDriver.
+        /// </summary>
         [TearDown] // Marks this method to run after each test
         public void TearDown()
         {
