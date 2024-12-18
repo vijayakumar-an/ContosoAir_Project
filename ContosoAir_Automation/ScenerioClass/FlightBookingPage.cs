@@ -1,4 +1,21 @@
-﻿using InterfaceClass;
+﻿/*
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0 
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+using InterfaceClass;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -8,13 +25,18 @@ using WebAdapterClass;
 
 namespace ScenerioClass
 {
-
+    /// <summary>
+    /// Contains test cases for the Flight Booking functionality of the application.
+    /// </summary>
     [TestFixture]
     public class FlightBookingTests
     {
         private IWebDriver driver;
         private IFlightBooking flightBookingPage;
 
+        /// <summary>
+        /// Initializes the WebDriver and FlightBookingPage before each test.
+        /// </summary>
         [SetUp]
         public void SetUp()
         {
@@ -22,6 +44,9 @@ namespace ScenerioClass
             flightBookingPage = new FlightBookingPage(driver);
         }
 
+        /// <summary>
+        /// Validates login with valid credentials and booking process.
+        /// </summary>
         [Test]
         public void FlightBooking_ValidLogin()
         {
@@ -38,8 +63,9 @@ namespace ScenerioClass
             flightBookingPage.Close();
         }
 
-        
-
+        /// <summary>
+        /// Validates flight booking for a single passenger.
+        /// </summary>
         [Test]
         public void FlightBooking_SinglePassenger()
         {
@@ -52,10 +78,18 @@ namespace ScenerioClass
             // Book the flight
             flightBookingPage.BookFlight();
 
+            // Validate the booking title
+            var actual = driver.FindElement(By.CssSelector(".block-booking-title")).Text;
+            var expected = "Flight booked!";
+            Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
+
             // Close the browser
             flightBookingPage.Close();
         }
 
+        /// <summary>
+        /// Validates flight booking for multiple passengers.
+        /// </summary>
         [Test]
         public void FlightBooking_MultiplePassengers()
         {
@@ -68,10 +102,18 @@ namespace ScenerioClass
             // Book the flight
             flightBookingPage.BookFlight();
 
+            // Validate the booking title
+            var actual = driver.FindElement(By.CssSelector(".block-booking-title")).Text;
+            var expected = "Flight booked!";
+            Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
+
             // Close the browser
             flightBookingPage.Close();
         }
 
+        /// <summary>
+        /// Validates flight booking with different destinations.
+        /// </summary>
         [Test]
         public void FlightBooking_DifferentDestinations()
         {
@@ -84,10 +126,18 @@ namespace ScenerioClass
             // Book the flight
             flightBookingPage.BookFlight();
 
+            // Validate the booking title
+            var actual = driver.FindElement(By.CssSelector(".block-booking-title")).Text;
+            var expected = "Flight booked!";
+            Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
+
             // Close the browser
             flightBookingPage.Close();
         }
 
+        /// <summary>
+        /// Validates flight booking with a return date later than the departure date.
+        /// </summary>
         [Test]
         public void FlightBooking_ReturnDateLaterThanDepartureDate()
         {
@@ -100,10 +150,18 @@ namespace ScenerioClass
             // Book the flight
             flightBookingPage.BookFlight();
 
+            // Validate the booking title
+            var actual = driver.FindElement(By.CssSelector(".block-booking-title")).Text;
+            var expected = "Flight booked!";
+            Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
+
             // Close the browser
             flightBookingPage.Close();
         }
 
+        /// <summary>
+        /// Validates that the passenger dropdown contains valid values.
+        /// </summary>
         [Test]
         public void FlightBooking_PassengerDropdown_ShouldContainValidValues()
         {
@@ -118,13 +176,12 @@ namespace ScenerioClass
             // Assert
             var expectedValues = new List<string> { "1", "2", "3", "4", "5" };
             var actualValues = options.Select(o => o.Text).ToList();
-
             CollectionAssert.AreEqual(expectedValues, actualValues, "Passenger dropdown values do not match.");
         }
 
-
-
-
+        /// <summary>
+        /// Closes the WebDriver after each test.
+        /// </summary>
         [TearDown]
         public void TearDown()
         {
