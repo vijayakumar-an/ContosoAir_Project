@@ -47,5 +47,7 @@ namespace InterfaceClass
         /// Attempts to perform login without providing any credentials.
         /// </summary>
         void PerformLoginWithOutCredentials();
+
+        public void TearDown();
     }
 }

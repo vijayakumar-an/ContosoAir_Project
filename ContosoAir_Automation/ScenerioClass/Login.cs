@@ -32,19 +32,16 @@ namespace ScenerioClass
     [TestFixture]
     public class LoginScenario
     {
-        private IWebDriver driver;
-        private ILoginTest loginTest;
-
         /// <summary>
+        private ILoginTest loginTest;
         /// Initializes the WebDriver and login test setup before each test.
         /// </summary>
         [SetUp]
         public void SetUp()
         {
-            // Initialize the WebDriver (e.g., ChromeDriver or any other driver)
-            driver = new OpenQA.Selenium.Chrome.ChromeDriver();
+
             // Initialize the login test interface with the driver.
-            loginTest = new LoginTest(driver);
+            loginTest = new LoginTest();
         }
 
         /// <summary>
@@ -62,6 +59,7 @@ namespace ScenerioClass
             loginTest.NavigateToUrl(url);
             loginTest.PerformLoginWithCredentials(username, password);
             // Pause execution to observe results (optional).
+            loginTest.TearDown();
             Thread.Sleep(2000);
         }
 
@@ -81,16 +79,9 @@ namespace ScenerioClass
             loginTest.PerformLoginWithOutCredentials();
 
             Thread.Sleep(2000); // Allow time for UI validation (optional)
+            loginTest.TearDown();
         }
 
-        /// <summary>
-        /// Cleans up the WebDriver after each test execution.
-        /// </summary>
-        [TearDown]
-        public void TearDown()
-        {
-            // Close the browser and dispose of the WebDriver instance.
-            driver.Dispose();
-        }
+           
     }
 }
