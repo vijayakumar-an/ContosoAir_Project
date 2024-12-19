@@ -14,7 +14,7 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 
-Author: Vijay
+Author: Athesh
 */
 
 using System;
@@ -26,9 +26,9 @@ using System.Threading.Tasks;
 namespace InterfaceClass
 {
     /// <summary>
-    /// Defines the contract for login automation functionality.
+    /// Defines the contract for interacting with a flight summary page or functionality.
     /// </summary>
-    public interface ILoginTest
+    public interface IFlightSummary
     {
         /// <summary>
         /// Navigates to the specified URL.
@@ -37,15 +37,25 @@ namespace InterfaceClass
         void NavigateToUrl(string url);
 
         /// <summary>
-        /// Performs login with the provided username and password.
+        /// Logs in with the provided username and password.
         /// </summary>
         /// <param name="username">The username for login.</param>
         /// <param name="password">The password for login.</param>
-        void PerformLoginWithCredentials(string username, string password);
+        void PerformLogin(string username, string password);
 
         /// <summary>
-        /// Attempts to perform login without providing any credentials.
+        /// Books a flight with the specified details. Implementation should include selecting flight options, providing passenger details, and confirming the booking.
         /// </summary>
-        void PerformLoginWithOutCredentials();
+        void BookFlight();
+
+        /// <summary>
+        /// Validates or retrieves the passenger name associated with the flight booking.
+        /// </summary>
+        void checkPassengerName();
+
+        /// <summary>
+        /// Checks the functionality to cancel a flight booking. Implementation should validate that cancellation is processed correctly.
+        /// </summary>
+        void checkCancelBooking();
     }
 }
