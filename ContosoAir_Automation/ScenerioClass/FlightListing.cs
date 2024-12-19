@@ -33,7 +33,7 @@ namespace ScenerioClass
     [TestFixture]
     public class FlightListingPageTest
     {
-        private FlightListingPage flightListingPage;
+        private IFlightListing flightListingPage;
 
         /// <summary>
         /// Setup method to initialize the WebDriver and FlightListingPage instance.
