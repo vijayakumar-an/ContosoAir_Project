@@ -1,4 +1,23 @@
-﻿using InterfaceClass;
+﻿/*
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0 
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+
+Author: Athesh
+*/
+
+using InterfaceClass;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -8,17 +27,27 @@ using System.Linq;
 
 namespace WebAdapterClass
 {
+    /// <summary>
+    /// Implements the IFlightBooking interface, providing functionality for flight booking operations.
+    /// This class interacts with a web-based flight booking application through Selenium WebDriver.
+    /// </summary>
     public class FlightBooking : IFlightBooking
     {
         private IWebDriver driver;
 
-        // Constructor to initialize the WebDriver
+        /// <summary>
+        /// Constructor to initialize the WebDriver with a ChromeDriver.
+        /// </summary>
         public FlightBooking()
         {
             driver = new ChromeDriver();
         }
 
-        // Implementing the Login method
+        /// <summary>
+        /// Logs in to the flight booking application using provided credentials.
+        /// </summary>
+        /// <param name="username">Username for login</param>
+        /// <param name="password">Password for login</param>
         public void Login(string username, string password)
         {
             driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000");
@@ -35,7 +64,14 @@ namespace WebAdapterClass
             driver.FindElement(By.CssSelector(".btn")).Click();
         }
 
-        // Implementing the SelectFlightDetails method
+        /// <summary>
+        /// Selects the flight details including departure and return locations, dates, and number of passengers.
+        /// </summary>
+        /// <param name="from">Departure location</param>
+        /// <param name="to">Destination location</param>
+        /// <param name="departureDate">Departure date</param>
+        /// <param name="numberOfPassengers">Number of passengers</param>
+        /// <param name="returnDate">Return date</param>
         public void SelectFlightDetails(string from, string to, DateTime departureDate, int numberOfPassengers, DateTime returnDate)
         {
             driver.FindElement(By.LinkText("Book")).Click();
@@ -57,10 +93,11 @@ namespace WebAdapterClass
             // Set number of passengers
             var passengersDropdown = driver.FindElement(By.Id("passengers"));
             new SelectElement(passengersDropdown).SelectByText(numberOfPassengers.ToString());
-
         }
 
-        // Implementing the BookFlight method
+        /// <summary>
+        /// Books the selected flight after choosing the flight options and confirming the booking.
+        /// </summary>
         public void BookFlight()
         {
             driver.FindElement(By.CssSelector(".btn-md")).Click();
@@ -73,18 +110,27 @@ namespace WebAdapterClass
             driver.FindElement(By.CssSelector(".btn:nth-child(5)")).Click();
         }
 
-        // Implementing the Close method to quit the driver
+        /// <summary>
+        /// Closes the WebDriver session after completing the test.
+        /// </summary>
         public void Close()
         {
             driver.Quit();
         }
 
-        // Additional method for retrieving booking confirmation title
+        /// <summary>
+        /// Retrieves the booking confirmation title from the confirmation page.
+        /// </summary>
+        /// <returns>The booking confirmation title as a string.</returns>
         public string GetBookingConfirmationTitle()
         {
             return driver.FindElement(By.CssSelector(".block-booking-title")).Text;
         }
 
+        /// <summary>
+        /// Retrieves the "From" and "To" flight details from the booking confirmation.
+        /// </summary>
+        /// <returns>A tuple containing the "From" and "To" locations from the confirmation.</returns>
         public (string from, string to) GetBookingDetailsFromConfirmation()
         {
             // Locate the "From" and "To" elements on the confirmation page

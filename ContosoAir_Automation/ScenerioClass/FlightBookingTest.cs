@@ -26,19 +26,27 @@ using InterfaceClass;
 
 namespace ScenerioClass
 {
+    /// <summary>
+    /// Contains test cases for the IFlightBooking interface methods, ensuring that flight booking, confirmation, and retrieval of booking details work correctly.
+    /// </summary>
     [TestFixture]
     public class FlightBookingTests
     {
         private IFlightBooking flightBooking;
 
-        // Setup method to initialize the FlightBookingPage
+        /// <summary>
+        /// Setup method to initialize the FlightBookingPage before each test.
+        /// </summary>
         [SetUp]
         public void SetUp()
         {
             flightBooking = new FlightBooking();  // No need to pass WebDriver here anymore
         }
 
-        // Test Case 1: Valid Login and Booking Flight
+        /// <summary>
+        /// Test Case 1: Valid Login and Booking Flight.
+        /// Verifies that the flight booking is confirmed after a valid login and flight selection.
+        /// </summary>
         [Test]
         public void FlightBooking_ValidLogin()
         {
@@ -62,7 +70,10 @@ namespace ScenerioClass
             Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
         }
 
-        // Test Case 2: Flight Booking with Single Passenger
+        /// <summary>
+        /// Test Case 2: Flight Booking with Single Passenger.
+        /// Verifies that the booking for a single passenger is successfully confirmed.
+        /// </summary>
         [Test]
         public void FlightBooking_SinglePassenger()
         {
@@ -86,7 +97,10 @@ namespace ScenerioClass
             Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
         }
 
-        // Test Case 3: Flight Booking with Multiple Passengers
+        /// <summary>
+        /// Test Case 3: Flight Booking with Multiple Passengers.
+        /// Verifies that the booking for multiple passengers is successfully confirmed.
+        /// </summary>
         [Test]
         public void FlightBooking_MultiplePassengers()
         {
@@ -110,7 +124,10 @@ namespace ScenerioClass
             Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
         }
 
-        // Test Case 4: Flight Booking with Different Destinations
+        /// <summary>
+        /// Test Case 4: Flight Booking with Different Destinations.
+        /// Verifies that the booking for a flight with different destinations is successfully confirmed.
+        /// </summary>
         [Test]
         public void FlightBooking_DifferentDestinations()
         {
@@ -133,6 +150,11 @@ namespace ScenerioClass
             var expected = "Flight booked!";
             Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
         }
+
+        /// <summary>
+        /// Test Case 5: Validate 'From' and 'To' locations after booking.
+        /// Verifies that the correct departure and destination locations are retrieved from the booking confirmation.
+        /// </summary>
         [Test]
         public void FlightBooking_ValidateFromAndToAfterBooking()
         {
@@ -140,7 +162,7 @@ namespace ScenerioClass
             string username = "athesh";
             string password = "athesh";
             string from = "Seisia ABM";
-            string to = "Egg Harbor City ACY"; 
+            string to = "Egg Harbor City ACY";
             DateTime departureDate = DateTime.Now.AddDays(7);
             DateTime returnDate = DateTime.Now.AddDays(14);
             int numberOfPassengers = 2;
@@ -160,8 +182,9 @@ namespace ScenerioClass
             Assert.AreEqual(exceptto, confirmedTo, $"Expected 'To' location: {to}, but got: {confirmedTo}");
         }
 
-
-        // TearDown method to close the driver after each test
+        /// <summary>
+        /// TearDown method to close the flight booking session after each test.
+        /// </summary>
         [TearDown]
         public void TearDown()
         {

@@ -24,19 +24,27 @@ using WebAdapterClass;
 
 namespace ScenerioClass
 {
+    /// <summary>
+    /// Contains test cases for the IFlightSummary interface methods, ensuring that flight booking, cancellation, and related functionalities work correctly.
+    /// </summary>
     [TestFixture]
     public class FlightSummaryTests
     {
         private IFlightSummary flightSummary;
 
-        // Setup method to initialize the FlightSummary class
+        /// <summary>
+        /// Setup method to initialize the FlightSummary class before each test.
+        /// </summary>
         [SetUp]
         public void SetUp()
         {
             flightSummary = new FlightSummary();
         }
 
-        // Test Case 1: Valid Login and Booking Flight
+        /// <summary>
+        /// Test Case 1: Valid Login and Booking Flight.
+        /// Verifies that the flight booking is confirmed after a valid login and flight selection.
+        /// </summary>
         [Test]
         public void FlightSummary_ValidLogin()
         {
@@ -59,7 +67,10 @@ namespace ScenerioClass
             Assert.IsTrue(actual, "Booking confirmation failed.");
         }
 
-        // Test Case 2: Check Passenger Name after Booking
+        /// <summary>
+        /// Test Case 2: Check Passenger Name after Booking.
+        /// Verifies that the passenger name can be correctly checked after booking a flight.
+        /// </summary>
         [Test]
         public void FlightSummary_CheckPassengerName()
         {
@@ -81,7 +92,10 @@ namespace ScenerioClass
             // Assert: Passenger name check is implicitly tested
         }
 
-        // Test Case 3: Cancel Booking
+        /// <summary>
+        /// Test Case 3: Cancel Booking.
+        /// Verifies that the booking can be successfully canceled and the cancellation status is correct.
+        /// </summary>
         [Test]
         public void FlightSummary_CancelBooking()
         {
@@ -105,7 +119,9 @@ namespace ScenerioClass
             Assert.IsTrue(actual, "Booking cancellation failed.");
         }
 
-        // TearDown method to close the driver after each test
+        /// <summary>
+        /// TearDown method to close the flight summary session after each test.
+        /// </summary>
         [TearDown]
         public void TearDown()
         {
@@ -113,3 +129,4 @@ namespace ScenerioClass
         }
     }
 }
+
