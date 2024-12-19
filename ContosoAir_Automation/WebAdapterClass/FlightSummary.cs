@@ -1,211 +1,142 @@
-﻿/*
-Licensed to the Software Freedom Conservancy (SFC) under one
-or more contributor license agreements. See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership. The SFC licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0 
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied. See the License for the
-specific language governing permissions and limitations
-under the License.
-
-Author: Athesh
-*/
- 
-using InterfaceClass;
+﻿using InterfaceClass;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
-using static System.Collections.Specialized.BitVector32;
 
 namespace WebAdapterClass
 {
-    /// <summary>
-    /// The FlightSummary class implements IFlightSummary and provides functionality 
-    /// for interacting with the flight booking application. It includes methods for navigating the website,
-    /// performing login, booking flights, checking passenger details, and canceling bookings.
-    /// </summary>
-    public class FlightSummary : ContosoAirCommon, IFlightSummary
+    public class FlightSummary : IFlightSummary
     {
         private readonly IWebDriver driver;
 
-        /// <summary>
-        /// Initializes a new instance of the FlightSummary class with the specified WebDriver.
-        /// </summary>
-        /// <param name="webDriver">The WebDriver instance used to control the browser.</param>
-        public FlightSummary(IWebDriver Driver): base()
+        public FlightSummary()
         {
-            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
-        }
-        public FlightSummary() : base()
-        {
-            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
-
+            driver = new ChromeDriver();
         }
 
+        
+
         /// <summary>
-        /// Navigates to the specified URL and maximizes the browser window.
+        /// Logs in using the provided username and password.
         /// </summary>
-        /// <param name="url">The URL to navigate to.</param>
-        public void NavigateToUrl(string url)
+        /// <param name="username">The username for login.</param>
+        /// <param name="password">The password for login.</param>
+        public void Login(string username, string password)
         {
-            driver.Navigate().GoToUrl(url);
+            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000");
             driver.Manage().Window.Maximize();
+
+            // Navigate to login
+            driver.FindElement(By.LinkText("Login")).Click();
+
+            // Enter login credentials
+            driver.FindElement(By.Id("username")).SendKeys(username);
+            driver.FindElement(By.Id("password")).SendKeys(password);
+
+            // Click login button
+            driver.FindElement(By.CssSelector(".btn")).Click();
         }
 
         /// <summary>
-        /// Performs login with the given username and password.
-        /// Throws an exception if either the username or password is null or empty.
+        /// Selects flight details for booking.
         /// </summary>
-        /// <param name="username">The username to log in.</param>
-        /// <param name="password">The password associated with the username.</param>
-        public void PerformLogin(string username, string password)
+        /// <param name="from">The origin location.</param>
+        /// <param name="to">The destination location.</param>
+        /// <param name="departureDate">The departure date.</param>
+        /// <param name="numberOfPassengers">The number of passengers.</param>
+        /// <param name="returnDate">The return date.</param>
+        public void SelectFlightDetails(string from, string to, DateTime departureDate, int numberOfPassengers, DateTime returnDate)
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException("Username and password cannot be null or empty");
-            }
+            driver.FindElement(By.LinkText("Book")).Click();
 
-            driver.FindElement(By.LinkText("Login")).Click();// Click login link
-            driver.FindElement(By.Id("username")).SendKeys(username);// Enter username
-            driver.FindElement(By.Id("password")).SendKeys(password);// Enter password
-            driver.FindElement(By.CssSelector(".btn")).Click();// Click login button
+            SelectDropdownValue("fromCode", from);
+            SelectDropdownValue("toCode", to);
+
+            driver.FindElement(By.Id("dpa")).SendKeys(departureDate.ToString("yyyy-MM-dd"));
+            driver.FindElement(By.Id("dpb")).SendKeys(returnDate.ToString("yyyy-MM-dd"));
+            SelectDropdownValue("passengers", numberOfPassengers.ToString());
         }
 
         /// <summary>
-        /// Books a flight by selecting origin, destination, dates, and confirming the booking.
-        /// This method automates the entire flight booking process.
+        /// Books the flight after selecting details.
         /// </summary>
         public void BookFlight()
         {
-            driver.FindElement(By.LinkText("Book")).Click();// Navigate to the booking page
-
-            // Select destination
-            driver.FindElement(By.Id("toCode")).Click();
-            var toDropdown = driver.FindElement(By.Id("toCode"));
-            toDropdown.FindElement(By.XPath("//option[. = 'Kabri Dar ABK']")).Click();
-
-            // Select origin
-            driver.FindElement(By.Id("fromCode")).Click();
-            var fromDropdown = driver.FindElement(By.Id("fromCode"));
-            fromDropdown.FindElement(By.XPath("//option[. = 'Novorossiysk AAQ']")).Click();
-
-            // Select departure and arrival dates
-            driver.FindElement(By.Id("dpb")).Click();
-            driver.FindElement(By.CssSelector("tr:nth-child(5) > .day:nth-child(6)")).Click();
-            driver.FindElement(By.Id("dpa")).Click();
-            driver.FindElement(By.CssSelector("tr:nth-child(4) > .day:nth-child(5)")).Click();
-
-            // Click on flight search
-            driver.FindElement(By.CssSelector(".row:nth-child(3)")).Click();
             driver.FindElement(By.CssSelector(".btn-md")).Click();
 
-            // Select a flight
-            driver.FindElement(By.CssSelector(".row:nth-child(3) .block-flights-results-list-item:nth-child(3) .big-blue-radio")).Click();
+            // Select flight option
+            driver.FindElement(By.CssSelector(".block-flights-results-list-item:nth-child(2) .big-blue-radio")).Click();
+
+            // Proceed to booking
             driver.FindElement(By.CssSelector(".btn")).Click();
-
-            // Complete passenger details
-            driver.FindElement(By.CssSelector(".block-booking-passenger")).Click();
-            driver.FindElement(By.CssSelector(".btn:nth-child(5)")).Click();
-
+            
+            //driver.FindElement(By.CssSelector("body > main > section > div > form > div.text-center.text-md-right.block-booking-buttons > input.btn.btn-lg.btn-primary")).Click();
         }
 
         /// <summary>
-        /// Checks the passenger's name by booking a flight and proceeding to the passenger details page.
+        /// Checks the passenger's name on the confirmation page.
         /// </summary>
-        public void checkPassengerName()
+        public void CheckPassengerName()
         {
-            driver.FindElement(By.LinkText("Book")).Click();
-
-            // Select destination
-            driver.FindElement(By.Id("toCode")).Click();
-            var toDropdown = driver.FindElement(By.Id("toCode"));
-            toDropdown.FindElement(By.XPath("//option[. = 'Kabri Dar ABK']")).Click();
-
-            // Select origin
-            driver.FindElement(By.Id("fromCode")).Click();
-            var fromDropdown = driver.FindElement(By.Id("fromCode"));
-            fromDropdown.FindElement(By.XPath("//option[. = 'Novorossiysk AAQ']")).Click();
-
-            // Select departure and arrival dates
-            driver.FindElement(By.Id("dpb")).Click();
-            driver.FindElement(By.CssSelector("tr:nth-child(5) > .day:nth-child(6)")).Click();
-            driver.FindElement(By.Id("dpa")).Click();
-            driver.FindElement(By.CssSelector("tr:nth-child(4) > .day:nth-child(5)")).Click();
-
-            // Click on flight search
-            driver.FindElement(By.CssSelector(".row:nth-child(3)")).Click();
-            driver.FindElement(By.CssSelector(".btn-md")).Click();
-
-            // Select a flight
-            driver.FindElement(By.CssSelector(".row:nth-child(3) .block-flights-results-list-item:nth-child(3) .big-blue-radio")).Click();
-            driver.FindElement(By.CssSelector(".btn")).Click();
-            // Complete passenger details
-            driver.FindElement(By.CssSelector(".block-booking-passenger")).Click();
-            driver.FindElement(By.CssSelector(".btn:nth-child(5)")).Click();
-
+            string passengerName = driver.FindElement(By.CssSelector(".block-booking-passenger")).Text;
+            if (string.IsNullOrEmpty(passengerName))
+            {
+                throw new Exception("Passenger name not found.");
+            }
         }
 
         /// <summary>
-        /// Cancels a flight booking by selecting the flight, confirming the booking, 
-        /// and then initiating the cancellation process.
+        /// Cancels the flight booking.
         /// </summary>
-        public void checkCancelBooking()
+        public void CheckCancelBooking()
         {
-            // Navigate to "Book"
-            driver.FindElement(By.LinkText("Book")).Click();
-
-            // Select destination
-            driver.FindElement(By.Id("toCode")).Click();
-            var toDropdown = driver.FindElement(By.Id("toCode"));
-            toDropdown.FindElement(By.XPath("//option[. = 'Winisk YMO']")).Click();
-
-            // Select origin
-            driver.FindElement(By.Id("fromCode")).Click();
-            var fromDropdown = driver.FindElement(By.Id("fromCode"));
-            fromDropdown.FindElement(By.XPath("//option[. = 'Teniente R. Marsh TNM']")).Click();
-
-            // Select departure date
-            driver.FindElement(By.Id("dpb")).Click();
-            driver.FindElement(By.CssSelector("tr:nth-child(6) > .day:nth-child(2)")).Click();
-
-            // Select return date
-            driver.FindElement(By.Id("dpa")).Click();
-            driver.FindElement(By.CssSelector("tr:nth-child(4) > .day:nth-child(6)")).Click();
-
-            // Select passengers
-            driver.FindElement(By.Id("passengers")).Click();
-            var passengerDropdown = driver.FindElement(By.Id("passengers"));
-            passengerDropdown.FindElement(By.XPath("//option[. = '2']")).Click();
-
-            // Search for flights
-            driver.FindElement(By.CssSelector(".btn-md")).Click();
-
-            // Select outbound flight
-            driver.FindElement(By.CssSelector(".row:nth-child(3) .block-flights-results-list-item:nth-child(6) .big-blue-radio")).Click();
-
-            // Select return flight
-            driver.FindElement(By.CssSelector(".row:nth-child(6) .block-flights-results-list-item:nth-child(6) .big-blue-radio")).Click();
-
-            // Confirm booking
-            driver.FindElement(By.CssSelector(".btn")).Click();
-
-            // Cancel booking
-            driver.FindElement(By.LinkText("Cancel")).Click();
-
-            // Update passengers after canceling
-            driver.FindElement(By.Id("passengers")).Click();
-            var updatedPassengerDropdown = driver.FindElement(By.Id("passengers"));
-            updatedPassengerDropdown.FindElement(By.XPath("//option[. = '3']")).Click();
-
-            // Finalize changes
-            driver.FindElement(By.CssSelector(".block-search-form-title")).Click();
+            driver.FindElement(By.CssSelector("body > main > section > div > form > div.text-center.text-md-right.block-booking-buttons > a")).Click();
         }
 
+        /// <summary>
+        /// Checks if the booking was successfully confirmed.
+        /// </summary>
+        /// <returns>True if booking confirmed, otherwise false.</returns>
+        public bool IsBookingConfirmed()
+        {
+            return driver.FindElements(By.CssSelector(".block-booking")).Count > 0;
+        }
 
+        /// <summary>
+        /// Gets the passenger's name from the confirmation page.
+        /// </summary>
+        /// <returns>The passenger name.</returns>
+        public string GetPassengerName()
+        {
+            return driver.FindElement(By.CssSelector(".block-booking-passenger")).Text;
+        }
+
+        /// <summary>
+        /// Checks if the booking cancellation was successful.
+        /// </summary>
+        /// <returns>True if cancellation successful, otherwise false.</returns>
+        public bool IsCancellationSuccessful()
+        {
+            return driver.FindElements(By.CssSelector(".btn-cancel")).Count > 0;
+        }
+
+        /// <summary>
+        /// Closes the browser.
+        /// </summary>
+        public void Close()
+        {
+            driver.Quit();
+        }
+
+        /// <summary>
+        /// Utility method to select a value from a dropdown by element ID.
+        /// </summary>
+        /// <param name="elementId">The ID of the dropdown element.</param>
+        /// <param name="value">The value to select.</param>
+        private void SelectDropdownValue(string elementId, string value)
+        {
+            new SelectElement(driver.FindElement(By.Id(elementId))).SelectByText(value);
+        }
     }
 }
