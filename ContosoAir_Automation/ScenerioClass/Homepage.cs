@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebAdapterClass;
 
 namespace ScenerioClass
 {
@@ -31,19 +32,15 @@ namespace ScenerioClass
     /// </summary>
     public class HomepageTests
     {
-        private WebAdapterClass.Homepage homepage;
-        private IWebDriver driver;
-
+        private Homepage homepage;
+       
         /// <summary>
         /// Sets up the test environment by initializing the WebDriver and the Homepage instance.
         /// </summary>
         [SetUp] // Marks this method to run before each test
         public void Setup()
         {
-            // Initialize WebDriver and Homepage instance
-            driver = new OpenQA.Selenium.Chrome.ChromeDriver();
-            homepage = new WebAdapterClass.Homepage(driver);
-            homepage.NavigateToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
+            homepage = new Homepage();
         }
 
         /// <summary>
@@ -83,7 +80,7 @@ namespace ScenerioClass
             string actual = homepage.getTitle();
 
             // Use System's Assert.Equals for comparison (if that's your preference)
-            Assert.That(actual, Is.EqualTo("Where do you\r\nwant to go?"));
+            Assert.AreEqual(expected, actual); 
         }
 
         /// <summary>
@@ -102,7 +99,7 @@ namespace ScenerioClass
             string expectedSubtitle = "Flight deals";
             string actualSubtitle = homepage.subTitle();
 
-            Assert.That(actualSubtitle, Is.EqualTo(expectedSubtitle));
+            Assert.AreEqual(expectedSubtitle, actualSubtitle);
         }
 
         /// <summary>
@@ -121,7 +118,7 @@ namespace ScenerioClass
             string expectedSuggestedTitle = "Recommended for you";
             string actualSuggestedTitle = homepage.getSuggestTitle();
 
-            Assert.That(actualSuggestedTitle, Is.EqualTo(expectedSuggestedTitle));
+            Assert.AreEqual(expectedSuggestedTitle, actualSuggestedTitle);
         }
 
         /// <summary>
@@ -157,12 +154,9 @@ namespace ScenerioClass
             string actualName = homepage.checkHawaiiCaption();
 
             // Assert the caption name
-            Assert.That(actualName, Is.EqualTo(expectedName));
+            Assert.AreEqual(expectedName, actualName);
 
-            // Check Paris caption, this should not throw an error.
-            Assert.DoesNotThrow(() => homepage.checkParisCaption(), "The Hawaii caption is not displayed on the homepage.");
         }
-
         /// <summary>
         /// Verifies that the Paris image is displayed on the homepage.
         /// </summary>
@@ -197,10 +191,10 @@ namespace ScenerioClass
             string actualName = homepage.checkParisCaption();
 
             // Assert the caption name
-            Assert.That(actualName, Is.EqualTo(expectedName));
+            Assert.AreEqual(expectedName, actualName);
 
             // Check Paris caption, this should not throw an error.
-            Assert.DoesNotThrow(() => homepage.checkParisCaption(), "The Paris caption is not displayed on the homepage.");
+
         }
 
         /// <summary>
@@ -236,10 +230,7 @@ namespace ScenerioClass
             string actualName = homepage.checkBarcelonaCaption();
 
             // Assert the caption name
-            Assert.That(actualName, Is.EqualTo(expectedName));
-
-            // Check Paris caption, this should not throw an error.
-            Assert.DoesNotThrow(() => homepage.checkBarcelonaCaption(), "The Barcelona caption is not displayed on the homepage.");
+            Assert.AreEqual(expectedName, actualName);
         }
 
         /// <summary>
@@ -259,14 +250,6 @@ namespace ScenerioClass
             // like checking that some element exists after login.
         }
 
-        /// <summary>
-        /// Cleans up the test environment by closing the WebDriver.
-        /// </summary>
-        [TearDown] // Marks this method to run after each test
-        public void TearDown()
-        {
-            driver.Quit();
         }
-    }
 
 }

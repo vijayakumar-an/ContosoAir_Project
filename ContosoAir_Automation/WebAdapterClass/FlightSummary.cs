@@ -29,7 +29,7 @@ namespace WebAdapterClass
     /// for interacting with the flight booking application. It includes methods for navigating the website,
     /// performing login, booking flights, checking passenger details, and canceling bookings.
     /// </summary>
-    public class FlightSummary : IFlightSummary
+    public class FlightSummary : ContosoAirCommon, IFlightSummary
     {
         private readonly IWebDriver driver;
 
@@ -37,9 +37,14 @@ namespace WebAdapterClass
         /// Initializes a new instance of the FlightSummary class with the specified WebDriver.
         /// </summary>
         /// <param name="webDriver">The WebDriver instance used to control the browser.</param>
-        public FlightSummary(IWebDriver webDriver)
+        public FlightSummary(IWebDriver Driver): base()
         {
-            driver = webDriver ?? throw new ArgumentNullException(nameof(webDriver));
+            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
+        }
+        public FlightSummary() : base()
+        {
+            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
+
         }
 
         /// <summary>

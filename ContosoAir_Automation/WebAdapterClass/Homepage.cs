@@ -32,7 +32,7 @@ namespace WebAdapterClass
     /// <summary>
     /// Provides the implementation of the IHomepage interface for interacting with the homepage using Selenium WebDriver.
     /// </summary>
-    public class Homepage : IHomepage
+    public class Homepage : ContosoAirCommon, IHomepage
     {
         private readonly IWebDriver driver;
 
@@ -41,18 +41,23 @@ namespace WebAdapterClass
         /// </summary>
         /// <param name="webDriver">An instance of IWebDriver for browser interaction.</param>
         /// <exception cref="ArgumentNullException">Thrown if webDriver is null.</exception>
-        public Homepage(IWebDriver webDriver)
+        public Homepage(IWebDriver driver) : base(driver)
         {
-            driver = webDriver ?? throw new ArgumentNullException(nameof(webDriver));
+            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
         }
-
-        /// <summary>
-        /// Navigates to the specified URL.
-        /// </summary>
-        /// <param name="url">The URL to navigate to.</param>
+        public Homepage() : base()
+        {
+            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
+        }
+       
+            /// <summary>
+            /// Navigates to the specified URL.
+            /// </summary>
+            /// <param name="url">The URL to navigate to.</param>
         public void NavigateToUrl(string url)
         {
             driver.Navigate().GoToUrl(url);
+            driver.Manage().Window.Size = new System.Drawing.Size(1296, 688);
         }
 
         /// <summary>

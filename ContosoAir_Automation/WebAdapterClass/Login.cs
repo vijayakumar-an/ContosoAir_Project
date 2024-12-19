@@ -30,22 +30,25 @@ namespace WebAdapterClass
     //// <summary>
     /// Class implementing the ILoginTest interface to perform login automation.
     /// </summary>
-    public class LoginTest : ILoginTest
+    public class LoginTest : ContosoAirCommon, ILoginTest
     {
         /// <summary>
         /// The WebDriver instance used to control the browser.
         /// </summary>
-        private readonly IWebDriver driver;
+        //private readonly IWebDriver driver;
 
+        public LoginTest() : base(){
+
+            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
+        }
+        public LoginTest(IWebDriver driver) : base(driver) {
+            driver.Navigate().GoToUrl("http://contosoair.westus.cloudapp.azure.com:3000/");
+
+        }
         /// <summary>
         /// Constructor to initialize the WebDriver.
         /// </summary>
         /// <param name="driver">The WebDriver instance to control the browser.</param>
-        public LoginTest(IWebDriver driver)
-        {
-            this.driver = driver;
-        }
-
         /// <summary>
         /// Navigates to the specified URL and sets the browser window size.
         /// </summary>
@@ -83,7 +86,12 @@ namespace WebAdapterClass
             // Optional: Capture the alert or validation message
             var alertMessage = driver.FindElement(By.CssSelector(".alert > span")).Text;
             Console.WriteLine("Alert Message Displayed: " + alertMessage);
+
         }
 
+        public void TearDown()
+        {
+            driver.Quit();
+        }
     }
 }
