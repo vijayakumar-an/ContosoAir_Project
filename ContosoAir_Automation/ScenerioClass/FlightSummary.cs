@@ -81,6 +81,18 @@ namespace ScenerioClass
             flightSummary.checkCancelBooking(); // Check the cancel booking functionality
         }
 
+        [Test]
+        public void CheckPurchace()
+        {
+            // Perform login
+            flightSummary.PerformLogin("Vijay", "Vijay");// Login with test credentials
+            // Book a flight
+            string expectedName = "Paris";
+            string actualName = "Hawaii";
+
+            Assert.AreEqual(expectedName, actualName);
+        }
+
         /// <summary>
         /// Cleanup method to close the WebDriver after the test execution.
         /// Ensures that the browser is closed and resources are released.

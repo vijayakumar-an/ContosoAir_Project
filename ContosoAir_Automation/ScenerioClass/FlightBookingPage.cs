@@ -112,7 +112,26 @@ namespace ScenerioClass
             // Close the browser
             flightBookingPage.Close();
         }
+        [Test]
+        public void FlightBooking_Passengers()
+        {
+            // Login
+            flightBookingPage.Login("athesh", "athesh");
 
+            // Select flight details for multiple passengers
+            flightBookingPage.SelectFlightDetails("Seisia", "Egg Harbor City ACY", new DateTime(2024, 12, 20), 3, new DateTime(2024, 12, 25));
+
+            // Book the flight
+            flightBookingPage.BookFlight();
+
+            // Validate the booking title
+            var actual = driver.FindElement(By.CssSelector(".block-booking-title")).Text;
+            var expected = "Flight booked!";
+            Assert.AreEqual(expected, actual, "The booking title does not match the expected description.");
+
+            // Close the browser
+            flightBookingPage.Close();
+        }
         /// <summary>
         /// Validates flight booking with different destinations.
         /// </summary>

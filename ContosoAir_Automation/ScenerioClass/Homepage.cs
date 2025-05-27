@@ -191,7 +191,7 @@ namespace ScenerioClass
             // Perform login
             homepage.PerformLogin(username, password);
 
-            string expectedName = "Paris";
+            string expectedName = "Pari";
 
             // Get the actual caption name
             string actualName = homepage.checkParisCaption();
